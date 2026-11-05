@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpenGTA · The Speedrun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07060b;--bg2:#0e0c16;--card:#13101d;--line:#2a2338;--txt:#f4eefc;--mut:#9a8fb0;
+  --pink:#ff2d95;--orange:#ff8a3d;--sun:#ffd23f;--teal:#19e3c4;--sky:#3fb6ff;--yes:#22e39a;--no:#ff4d6d;
+  --grad:linear-gradient(100deg,#ff2d95 0%,#ff8a3d 45%,#ffd23f 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.mono{font-family:"JetBrains Mono",monospace}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+
+/* test banner */
+.test{background:repeating-linear-gradient(45deg,#ffd23f 0 14px,#111 14px 28px);color:#000;text-align:center;font:800 11px/1 Inter;letter-spacing:.2em;padding:6px}
+.test span{background:#ffd23f;padding:3px 10px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(7,6,11,.72);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:24px;height:62px}
+.logo{font-family:Anton;font-size:26px;letter-spacing:.02em;background:var(--grad);-webkit-background-clip:text;color:transparent}
+.logo small{font-family:Inter;font-weight:700;font-size:10px;letter-spacing:.25em;color:var(--mut);-webkit-text-fill-color:var(--mut);margin-left:8px;vertical-align:middle}
+nav ul{display:flex;gap:20px;list-style:none;font-size:14px;color:var(--mut);font-weight:600}
+nav ul a{text-decoration:none}nav ul a:hover{color:var(--txt)}
+.navr{margin-left:auto;display:flex;gap:10px;align-items:center}
+.pill{border:1px solid var(--line);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600}
+.btn{background:var(--grad);color:#170a12;border:0;padding:10px 18px;border-radius:999px;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 8px 30px -8px rgba(255,45,149,.6)}
+.live{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--yes)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--yes);box-shadow:0 0 0 0 rgba(34,227,154,.7);animation:pulse 1.6s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(34,227,154,0)}100%{box-shadow:0 0 0 0 rgba(34,227,154,0)}}
+
+/* hero */
+.hero{position:relative;padding:70px 0 40px;overflow:hidden}
+.sun{position:absolute;right:-120px;top:-60px;width:620px;height:620px;border-radius:50%;
+  background:radial-gradient(circle at 50% 40%,#ffd23f 0%,#ff8a3d 35%,#ff2d95 62%,transparent 70%);filter:blur(4px);opacity:.55}
+.sun:after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:repeating-linear-gradient(180deg,transparent 0 22px,var(--bg) 22px 30px);mask:linear-gradient(180deg,transparent 45%,#000 60%)}
+.grid-floor{position:absolute;left:0;right:0;bottom:-40px;height:260px;
+  background:linear-gradient(transparent,var(--bg) 92%),repeating-linear-gradient(90deg,rgba(255,45,149,.25) 0 1px,transparent 1px 80px),repeating-linear-gradient(0deg,rgba(255,45,149,.25) 0 1px,transparent 1px 40px);
+  transform:perspective(500px) rotateX(60deg);transform-origin:bottom}
+.palms{position:absolute;right:6%;bottom:40px;font-size:120px;opacity:.9;filter:drop-shadow(0 0 30px #ff2d95)}
+.kicker{display:inline-flex;gap:10px;align-items:center;font-size:12px;font-weight:800;letter-spacing:.22em;color:var(--sun);text-transform:uppercase;border:1px solid rgba(255,210,63,.35);padding:7px 14px;border-radius:999px;background:rgba(255,210,63,.06)}
+h1{font-family:Anton;font-weight:400;font-size:clamp(46px,8.4vw,118px);line-height:.92;letter-spacing:-.005em;margin:22px 0 18px;text-transform:uppercase;position:relative}
+h1 .g{background:var(--grad);-webkit-background-clip:text;color:transparent}
+h1 .o{-webkit-text-stroke:2px var(--txt);color:transparent}
+.sub{font-size:19px;color:#cfc4e3;max-width:640px;line-height:1.5;position:relative}
+.sub b{color:var(--txt)}
+.cd{display:flex;gap:12px;margin-top:34px;position:relative;flex-wrap:wrap;align-items:flex-end}
+.cd .u{background:rgba(19,16,29,.8);border:1px solid var(--line);border-radius:16px;padding:14px 18px;min-width:96px;text-align:center}
+.cd .cn{font-family:"JetBrains Mono";font-weight:700;font-size:40px;line-height:1}
+.cd .l{font-size:11px;letter-spacing:.2em;color:var(--mut);margin-top:6px;font-weight:700}
+.cd .cap{font-size:13px;color:var(--mut);margin-left:6px;line-height:1.4}
+.cd .cap b{color:var(--sun)}
+
+/* ticker */
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg2);overflow:hidden;white-space:nowrap;position:relative}
+.ticker .lab{position:absolute;left:0;top:0;bottom:0;z-index:2;background:var(--pink);color:#fff;font-weight:800;font-size:12px;letter-spacing:.18em;display:flex;align-items:center;padding:0 16px}
+.track{display:inline-block;padding:13px 0 13px 150px;animation:tick 60s linear infinite;font-size:14px}
+.track span{margin-right:46px;color:#d9cfee}
+.track b{color:var(--sun);margin-right:6px}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:34px 0 26px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+.stat .k{font-size:11px;letter-spacing:.18em;color:var(--mut);font-weight:700;text-transform:uppercase}
+.stat .v{font-family:"JetBrains Mono";font-size:28px;font-weight:700;margin-top:8px}
+.stat .d{font-size:12px;color:var(--yes);margin-top:4px;font-weight:600}
+.stat svg{display:block;margin-top:8px}
+
+/* market */
+.mhead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:40px 0 16px;flex-wrap:wrap}
+h2{font-family:Anton;font-weight:400;font-size:44px;text-transform:uppercase;letter-spacing:.01em}
+h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;color:transparent}
+.tabs{display:flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px;gap:4px}
+.tab{border:0;background:transparent;color:var(--mut);font:700 14px Inter;padding:10px 18px;border-radius:999px;cursor:pointer}
+.tab small{display:block;font-size:10px;font-weight:600;opacity:.7}
+.tab.on{background:var(--txt);color:#0b0911}
+.table{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.row{display:grid;grid-template-columns:46px 1fr 190px 120px 250px;align-items:center;gap:16px;padding:18px 22px;border-top:1px solid var(--line);transition:background .2s}
+.row:hover{background:#181427}
+.row.h{border-top:0;font-size:11px;letter-spacing:.16em;color:var(--mut);font-weight:700;text-transform:uppercase;padding:14px 22px;background:#0f0d18}
+.row.sep{grid-template-columns:1fr;padding:12px 22px;background:#0f0d18;font-size:11px;letter-spacing:.2em;font-weight:800;color:var(--sun)}
+.num{font-family:Anton;font-size:26px;color:#4b4062}
+.mt{font-weight:700;font-size:16px}
+.mt small{display:block;color:var(--mut);font-weight:500;font-size:12.5px;margin-top:4px}
+.prob{display:flex;align-items:center;gap:10px}
+.prob .p{font-family:"JetBrains Mono";font-weight:700;font-size:22px;width:60px}
+.bar{flex:1;height:8px;background:#2a2338;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--yes));border-radius:9px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.vol{font-family:"JetBrains Mono";font-size:14px;color:#cfc4e3}
+.vol small{display:block;color:var(--mut);font-size:11px;font-family:Inter}
+.yn{display:flex;gap:8px}
+.yn button{flex:1;border:0;border-radius:12px;padding:12px 8px;font:800 14px Inter;cursor:pointer;transition:transform .15s}
+.yn button:hover{transform:translateY(-2px)}
+.y{background:rgba(34,227,154,.14);color:var(--yes);box-shadow:inset 0 0 0 1px rgba(34,227,154,.35)}
+.n{background:rgba(255,77,109,.12);color:var(--no);box-shadow:inset 0 0 0 1px rgba(255,77,109,.35)}
+.y:hover{background:var(--yes);color:#04140d}.n:hover{background:var(--no);color:#1a0207}
+.flash{animation:fl .9s}
+@keyframes fl{0%{background:rgba(255,210,63,.18)}100%{background:transparent}}
+
+/* lower: activity + evidence */
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:22px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px}
+.panel h3{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-bottom:14px;display:flex;justify-content:space-between}
+.feed{list-style:none;max-height:300px;overflow:hidden}
+.feed li{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px;animation:in .5s}
+@keyframes in{from{opacity:0;transform:translateY(-8px)}}
+.av{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:14px;font-weight:800;color:#0b0911}
+.feed .amt{margin-left:auto;font-family:"JetBrains Mono";font-weight:700}
+.tag{font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px}
+.agents .ag{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.agents .ag b{font-weight:700}
+.agents .ag .t{margin-left:auto;font-family:"JetBrains Mono";font-size:12px;color:var(--mut)}
+.cad{display:flex;gap:6px;margin-top:14px}
+.cad span{flex:1;text-align:center;font:700 12px "JetBrains Mono";padding:9px 0;border-radius:10px;border:1px solid var(--line);color:var(--mut)}
+.cad span.on{background:var(--grad);color:#170a12;border-color:transparent}
+
+.posts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.post{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;text-decoration:none;transition:transform .2s,border-color .2s}
+.post:hover{transform:translateY(-4px);border-color:#4b3a6b}
+.post .art{height:150px;position:relative;display:flex;align-items:flex-end;padding:16px;font-family:Anton;font-size:30px;text-transform:uppercase;line-height:.95}
+.post .body{padding:18px}
+.post .meta{font-size:11px;letter-spacing:.16em;color:var(--mut);font-weight:700;text-transform:uppercase}
+.post h4{font-size:18px;margin:8px 0;line-height:1.3}
+.post p{font-size:14px;color:#bfb3d6;line-height:1.5}
+.ver{display:inline-block;margin-top:12px;font-size:11px;font-weight:800;padding:4px 9px;border-radius:6px;background:rgba(25,227,196,.12);color:var(--teal)}
+
+/* disclaimers */
+.disc{margin:60px 0 0;padding:50px 0 70px;border-top:1px solid var(--line);background:radial-gradient(ellipse at top,rgba(255,45,149,.12),transparent 60%)}
+.disc h2{font-size:clamp(36px,6vw,72px);text-align:center}
+.disc ol{list-style:none;max-width:760px;margin:26px auto 0;display:grid;gap:10px}
+.disc li{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;font-size:15px;color:#d9cfee}
+.disc li b{color:var(--sun);font-family:"JetBrains Mono";margin-right:6px}
+.foot{text-align:center;color:var(--mut);font-size:12px;margin-top:30px}
+
+/* checkout modal */
+.ov{position:fixed;inset:0;background:rgba(4,3,8,.75);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
+.ov.on{display:flex}
+.modal{width:min(440px,100%);background:#120f1c;border:1px solid #3a2f50;border-radius:24px;padding:24px;box-shadow:0 40px 120px -20px rgba(255,45,149,.45)}
+.modal h3{font-size:20px;margin-bottom:4px}
+.modal .q{color:var(--mut);font-size:14px;margin-bottom:18px}
+.amts{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.amts button{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:12px;padding:12px 0;font:700 15px "JetBrains Mono";cursor:pointer}
+.amts button.on{border-color:var(--sun);background:rgba(255,210,63,.1);color:var(--sun)}
+.ret{display:flex;justify-content:space-between;margin:18px 0;padding:14px;border-radius:14px;background:var(--card);font-size:14px}
+.ret b{font-family:"JetBrains Mono";color:var(--yes);font-size:18px}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pay button{border:0;border-radius:12px;padding:14px;font:800 15px Inter;cursor:pointer}
+.pay .ap{background:#fff;color:#000}.pay .gp{background:#1f1f1f;color:#fff;border:1px solid #444}
+.pay .cc{grid-column:span 2;background:var(--grad);color:#170a12}
+.fine{font-size:11.5px;color:var(--mut);margin-top:12px;text-align:center}
+.rcpt{display:none}
+.rcpt .timer{font-family:"JetBrains Mono";font-size:56px;font-weight:700;text-align:center;background:var(--grad);-webkit-background-clip:text;color:transparent}
+.rcpt .rl{font:500 12.5px "JetBrains Mono";background:var(--card);border-radius:12px;padding:14px;line-height:1.8;margin:14px 0;color:#cfc4e3}
+
+@media(max-width:980px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .two,.posts{grid-template-columns:1fr}
+  .row{grid-template-columns:34px 1fr 150px;}
+  .row .vol,.row.h .hv{display:none}
+  .row .yn{grid-column:2/4}
+  nav ul{display:none}
+  .palms{display:none}
+}
+@media(max-width:560px){
+  .row{grid-template-columns:28px 1fr}
+  .row .prob{grid-column:2}
+  .row.h{display:none}
+  .tabs{width:100%}.tab{flex:1;padding:9px 6px}
+  .cd .u{min-width:70px;padding:10px}.cd .cn{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div class="test"><span>TEST MODE · MOCKUP · NO REAL MONEY</span></div>
+
+<nav><div class="wrap">
+  <div class="logo">OpenGTA<small>SPEEDRUN MARKET</small></div>
+  <ul><li><a href="#markets">Markets</a></li><li><a href="#evidence">Evidence</a></li><li><a href="#agents">Agents</a></li><li><a href="#rules">Rules</a></li></ul>
+  <div class="navr"><span class="live"><i class="dot"></i>LIVE</span><span class="pill mono" id="navPool">$0</span><button class="btn" onclick="openBuy(0,'yes')">Place your bet</button></div>
+</div></nav>
+
+<header class="hero">
+  <div class="sun"></div><div class="grid-floor"></div><div class="palms">🌴</div>
+  <div class="wrap">
+    <span class="kicker">⚡ PS5 → PC · AI-assisted · Open to everyone</span>
+    <h1>GTA VI<br><span class="g">the biggest unofficial</span><br><span class="o">speedrun</span> in the world <span class="g">to date</span></h1>
+    <p class="sub"><b>OpenGTA.</b> The race starts when GTA VI hits PS5. Who ports it to PC first, who ships it so others can run it, who gets it online, and who rewrites it in Rust? Put your money where your mouth is.</p>
+    <div class="cd" id="cd">
+      <div class="u"><div class="cn" id="dd">00</div><div class="l">DAYS</div></div>
+      <div class="u"><div class="cn" id="hh">00</div><div class="l">HRS</div></div>
+      <div class="u"><div class="cn" id="mm">00</div><div class="l">MIN</div></div>
+      <div class="u"><div class="cn" id="ss">00</div><div class="l">SEC</div></div>
+      <div class="cap">until the starting gun<br><b>PS5 launch · Nov 19, 2026</b></div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker"><div class="lab">LATEST NEWS</div><div class="track" id="track"></div></div>
+
+<main class="wrap">
+  <section class="stats" id="statsTop">
+    <div class="stat"><div class="k">Total pool</div><div class="v" id="sPool">$0</div><div class="d" id="sPoolD">▲ live</div></div>
+    <div class="stat"><div class="k">Entries</div><div class="v" id="sEnt">0</div><div class="d">one per person</div></div>
+    <div class="stat"><div class="k">Avg stake</div><div class="v" id="sAvg">$0</div><div class="d">cap $100 total</div></div>
+    <div class="stat"><div class="k">Hottest market</div><div class="v" id="sHot" style="font-size:18px;line-height:1.3">—</div><div class="d" id="sHotD"></div></div>
+    <div class="stat"><div class="k">Pool, 24h</div><svg id="spark" width="100%" height="44" viewBox="0 0 200 44" preserveAspectRatio="none"></svg></div>
+  </section>
+
+  <div class="mhead" id="markets">
+    <h2>The <em>milestones</em></h2>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-s="0">1D<small>24 hours</small></button>
+      <button class="tab" data-s="1">1W<small>7 days</small></button>
+      <button class="tab" data-s="2">FN<small>14 days</small></button>
+      <button class="tab" data-s="3">1M<small>30 days</small></button>
+    </div>
+  </div>
+  <p style="color:var(--mut);font-size:14px;margin:-4px 0 14px" id="spanNote"></p>
+
+  <div class="table" id="table"></div>
+
+  <section class="stats" id="statsBot" style="grid-template-columns:repeat(4,1fr)">
+    <div class="stat"><div class="k">1D pool</div><div class="v" id="p0">$0</div></div>
+    <div class="stat"><div class="k">1W pool</div><div class="v" id="p1">$0</div></div>
+    <div class="stat"><div class="k">FN pool</div><div class="v" id="p2">$0</div></div>
+    <div class="stat"><div class="k">1M pool</div><div class="v" id="p3">$0</div></div>
+  </section>
+
+  <div class="two">
+    <div class="panel"><h3><span>Live activity</span><span class="live"><i class="dot"></i>simulated</span></h3><ul class="feed" id="feed"></ul></div>
+    <div class="panel agents" id="agents"><h3><span>Research agents</span><span class="mono" id="cadNow"></span></h3>
+      <div class="ag">🛰️ <b>GitHub scout</b> AnyPS5 · KytyPS5 · PortPS5 commits<span class="t">ok · 3m ago</span></div>
+      <div class="ag">📺 <b>Video watcher</b> YouTube · DF · LTT transcripts<span class="t">ok · 11m ago</span></div>
+      <div class="ag">🧵 <b>Thread reader</b> Reddit · HN · X<span class="t">ok · 6m ago</span></div>
+      <div class="ag">🔬 <b>Verifier</b> cross-checks every claim<span class="t">ok · 1m ago</span></div>
+      <div class="cad"><span>5h</span><span>2h</span><span>1h</span><span>30m</span></div>
+      <p style="color:var(--mut);font-size:12.5px;margin-top:10px">Check-ins get more frequent as each deadline gets closer.</p>
+    </div>
+  </div>
+
+  <div class="mhead" id="evidence"><h2>The <em>evidence</em></h2><span style="color:var(--mut);font-size:14px">Verified by agents. A race, not a crack. Yet.</span></div>
+  <div class="posts">
+    <a class="post" href="https://github.com/boykopovar/AnyPS5" target="_blank"><div class="art" style="background:linear-gradient(135deg,#3fb6ff,#7a2dff)">PS5 → PC<br>is real</div><div class="body"><div class="meta">Report · Nov 5</div><h4>PS5 games already run natively on PC</h4><p>AnyPS5, KytyPS5 and PortPS5 translate PS5 executables to Windows and Linux. God of War: Sons of Sparta runs at ~60 FPS.</p><span class="ver">✓ SOURCES LINKED</span></div></a>
+    <a class="post" href="https://github.com/morluto/rea" target="_blank"><div class="art" style="background:linear-gradient(135deg,#ff2d95,#ff8a3d)">REA<br>Reverse anything</div><div class="body"><div class="meta">Report · Nov 5</div><h4>AI agents that reverse engineer binaries</h4><p>REA hooks agents up to Ghidra and IDA. DX-Ball's audio function was rebuilt to match the original byte for byte across 3,205 tests.</p><span class="ver">✓ SOURCES LINKED</span></div></a>
+    <a class="post" href="https://www.reddit.com/r/GTA6unmoderated/comments/1x4jvt6/a_communitymade_pc_port_of_the_game_is_entirely/" target="_blank"><div class="art" style="background:linear-gradient(135deg,#19e3c4,#3fb6ff)">"It's going to<br>be a race"</div><div class="body"><div class="meta">Community · Oct 13</div><h4>Reddit, DF and LTT are calling the race already</h4><p>Digital Foundry: "people will attempt to get the game running on PC fairly quickly." LTT's video passed 1M views.</p><span class="ver">✓ SOURCES LINKED</span></div></a>
+  </div>
+</main>
+
+<section class="disc" id="rules"><div class="wrap">
+  <h2>Put your money <em style="font-style:normal;background:var(--grad);-webkit-background-clip:text;color:transparent">where your mouth is</em></h2>
+  <ol>
+    <li><b>*</b>The point of this is not to make money off of bets, each person can choose once, capped at $100 for the overall bids</li>
+    <li><b>**</b>Even $1 is evidence, please do not use multi accounts.</li>
+    <li><b>***</b>This is just an internet gag, not to be taken seriously, no refunds</li>
+    <li><b>****</b>Winners will be sent an email to their account with link to redeem their rewards</li>
+  </ol>
+  <p class="foot">OpenGTA · open source, transparent, public · not affiliated with Rockstar Games or Take-Two · TEST MOCKUP</p>
+</div></section>
+
+<div class="ov" id="ov" onclick="if(event.target===this)closeBuy()"><div class="modal">
+  <div id="buyView">
+    <h3 id="bTitle">Buy YES</h3><div class="q" id="bQ"></div>
+    <div class="amts" id="amts"><button>$1</button><button>$5</button><button class="on">$10</button><button>$25</button><button>$100</button></div>
+    <div class="ret"><span>Est. return if right</span><b id="bRet">$0</b></div>
+    <div class="pay"><button class="ap" onclick="pay()">Wallet (demo)</button><button class="gp" onclick="pay()">Card (demo)</button><button class="cc" onclick="pay()">1-Click buy · demo, no charge</button></div>
+    <div class="fine">Test mode. Nothing is charged. After you pay, you have 5 minutes to move your stake between bids.</div>
+  </div>
+  <div class="rcpt" id="rcpt">
+    <h3>✅ You're in</h3><div class="q">Change your picks until the timer runs out. Spreading your stake is encouraged.</div>
+    <div class="timer" id="lock">5:00</div>
+    <div class="rl" id="rl"></div>
+    <div class="pay"><button class="cc" onclick="closeBuy()">Done</button></div>
+  </div>
+</div></div>
+
+<script>
+const LAUNCH=new Date('2026-11-19T00:00:00-05:00');
+const M=[
+ ['First Person To Port GTA VI To PC, And Successfully Play It','Interactive gameplay running locally on a PC'],
+ ['First Release That Others Can Run','Independent testers reproduce it from published instructions'],
+ ['Playing Online Works','Players on separate machines in one synced world'],
+ ['Playing Online On Officially Servers Works','Real activity on Rockstar\'s official services'],
+ ['Rewritten in Rust','Published Rust source runs the game'],
+ null,
+ ['Works on Linux, Mac & Windows','All three independently verified'],
+ ['New Community-Made Cheats & Mods','Publicly reproducible mods or trainers']
+];
+const SPANS=['1D','1W','FN','1M'],DAYS=[1,7,14,30];
+// base yes-probabilities per span, per milestone (mock)
+const BASE=[[.18,.04,.02,.01,.003,0,.02,.06],[.41,.17,.07,.03,.008,0,.08,.22],[.58,.33,.16,.07,.015,0,.17,.41],[.71,.52,.29,.13,.03,0,.31,.63]];
+const pools=BASE.map((r,s)=>r.map((p,i)=>{if(!M[i])return null;const t=(4000+Math.random()*9000)*(1+s*.6)*(1-i*.08);return{y:t*p+40,n:t*(1-p)+40}}));
+let span=0,entries=0,FEE=.05;
+const $=id=>document.getElementById(id);
+const fmt=v=>'$'+Math.round(v).toLocaleString();
+function prob(m){return m.y/(m.y+m.n)}
+function render(){
+  const rows=['<div class="row h"><div>#</div><div>Milestone</div><div>Chance</div><div class="hv">Volume</div><div>Trade</div></div>'];
+  M.forEach((m,i)=>{
+    if(!m){rows.push('<div class="row sep">★ EXTRAS</div>');return}
+    const pl=pools[span][i],p=prob(pl);
+    rows.push(`<div class="row" id="r${i}"><div class="num">${i<5?i+1:'★'}</div><div class="mt">${m[0]}<small>${m[1]}</small></div>
+    <div class="prob"><span class="p">${(p*100).toFixed(p<.1?1:0)}%</span><div class="bar"><i style="width:${p*100}%"></i></div></div>
+    <div class="vol">${fmt(pl.y+pl.n)}<small>pool</small></div>
+    <div class="yn"><button class="y" onclick="openBuy(${i},'yes')">Yes ${Math.round(p*100)}¢</button><button class="n" onclick="openBuy(${i},'no')">No ${Math.round((1-p)*100)}¢</button></div></div>`)
+  });
+  $('table').innerHTML=rows.join('');
+  const end=new Date(LAUNCH.getTime()+DAYS[span]*864e5);
+  $('spanNote').textContent=`Resolves YES if it's publicly verified by ${end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})} (${DAYS[span]} day${DAYS[span]>1?'s':''} after PS5 launch). Prices come from everyone's bids, and the house keeps 5% of the losing pool.`;
+  stats();
+}
+function tot(s){return pools[s].reduce((a,m)=>a+(m?m.y+m.n:0),0)}
+function stats(){
+  const all=[0,1,2,3].map(tot),T=all.reduce((a,b)=>a+b);
+  $('sPool').textContent=fmt(T);$('navPool').textContent=fmt(T);
+  $('sEnt').textContent=entries.toLocaleString();$('sAvg').textContent='$'+(T/entries).toFixed(2);
+  all.forEach((v,i)=>$('p'+i).textContent=fmt(v));
+  let best=[0,0,0];pools.forEach((r,s)=>r.forEach((m,i)=>{if(m&&m.y+m.n>best[0])best=[m.y+m.n,s,i]}));
+  $('sHot').textContent=M[best[2]][0].split(',')[0];$('sHotD').textContent=SPANS[best[1]]+' · '+fmt(best[0]);
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');span=+b.dataset.s;render()});
+
+// countdown
+function tickCD(){let d=Math.max(0,LAUNCH-Date.now())/1e3;const p=n=>String(Math.floor(n)).padStart(2,'0');
+ $('dd').textContent=p(d/86400);$('hh').textContent=p(d%86400/3600);$('mm').textContent=p(d%3600/60);$('ss').textContent=p(d%60);
+ const h=d/3600,c=h>72?0:h>24?1:h>6?2:3;document.querySelectorAll('.cad span').forEach((s,i)=>s.classList.toggle('on',i===c));$('cadNow').textContent='every '+['5h','2h','1h','30m'][c]}
+setInterval(tickCD,1000);tickCD();
+
+// news ticker
+const NEWS=[['Rockstar','GTA VI launches on PS5 Nov 19, 2026'],['AnyPS5','100% shader coverage reached'],['AnyPS5','421 commits in a single day'],['KytyPS5','"Road to GTA VI" roadmap thread opens'],['PortPS5','Spec targets a full GTA VI playthrough at 30 FPS / 1080p'],['REA','431K GitHub stars · agents + Ghidra + IDA'],['DF Direct','"People will attempt to get the game running on PC fairly quickly"'],['LTT','"GTA 6 on PC May be Coming Sooner than We Thought" passes 1M views'],['Polymarket','Official PC release by Dec 31: 7%'],['Polymarket','No contract exists for an unofficial port. Until now.']];
+$('track').innerHTML=[...NEWS,...NEWS].map(n=>`<span><b>${n[0]}</b>${n[1]}</span>`).join('');
+
+// sparkline
+const sp=[];let v=40;for(let i=0;i<48;i++){v+=Math.random()*4-1.2;sp.push(v)}
+function spark(){const mn=Math.min(...sp),mx=Math.max(...sp);const pts=sp.map((y,i)=>`${i*200/47},${44-(y-mn)/(mx-mn||1)*40-2}`).join(' ');
+ $('spark').innerHTML=`<defs><linearGradient id="sg" x1="0" x2="1"><stop offset="0" stop-color="#ff2d95"/><stop offset="1" stop-color="#ffd23f"/></linearGradient></defs><polyline points="${pts}" fill="none" stroke="url(#sg)" stroke-width="2.5" stroke-linejoin="round"/>`}
+spark();
+
+// live fake activity
+const NAMES=['vicecity_vic','leonida_lu','ps5ripper','rustacean','ghidra_gal','jason_d','lucia.dev','kyty_fan','byte_bandit','modfather','rea_runner','hexhunter'];
+const COLORS=['#ff2d95','#ff8a3d','#ffd23f','#19e3c4','#3fb6ff','#b388ff'];
+function act(){
+  const s=Math.floor(Math.random()*4),idx=[0,1,2,3,4,6,7][Math.floor(Math.random()*7)],yes=Math.random()<prob(pools[s][idx])+.15,amt=[1,2,5,5,10,10,20,25,50,100][Math.floor(Math.random()*10)];
+  pools[s][idx][yes?'y':'n']+=amt;entries+=Math.random()<.6?1:0;sp.push(sp[sp.length-1]+amt/8);sp.shift();spark();
+  const nm=NAMES[Math.floor(Math.random()*NAMES.length)],c=COLORS[Math.floor(Math.random()*COLORS.length)];
+  const li=document.createElement('li');li.innerHTML=`<div class="av" style="background:${c}">${nm[0].toUpperCase()}</div><div><b>${nm}</b> bought <span class="tag ${yes?'y':'n'}">${yes?'YES':'NO'}</span> ${SPANS[s]}<br><span style="color:var(--mut);font-size:12.5px">${M[idx][0]}</span></div><div class="amt">$${amt}</div>`;
+  const f=$('feed');f.prepend(li);while(f.children.length>7)f.lastChild.remove();
+  if(s===span){render();const r=$('r'+idx);r&&r.classList.add('flash')}else stats();
+  setTimeout(act,900+Math.random()*2200)
+}
+entries=Math.round([0,1,2,3].map(tot).reduce((a,b)=>a+b)/38);for(let i=0;i<6;i++)act();
+
+// checkout
+let cur=null,amt=10,lockT=null;
+function openBuy(i,side){cur={i,side};$('buyView').style.display='block';$('rcpt').style.display='none';
+ $('bTitle').innerHTML=`Buy <span style="color:${side==='yes'?'var(--yes)':'var(--no)'}">${side.toUpperCase()}</span> · ${SPANS[span]}`;$('bQ').textContent=M[i][0];est();$('ov').classList.add('on')}
+function est(){const pl=pools[span][cur.i],w=cur.side==='yes'?pl.y:pl.n,l=cur.side==='yes'?pl.n:pl.y;$('bRet').textContent='$'+(amt+amt/(w+amt)*(1-FEE)*l).toFixed(2)}
+document.querySelectorAll('#amts button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#amts button').forEach(x=>x.classList.remove('on'));b.classList.add('on');amt=+b.textContent.slice(1);est()});
+function pay(){pools[span][cur.i][cur.side==='yes'?'y':'n']+=amt;entries++;render();
+ const id='OG-'+Math.random().toString(36).slice(2,8).toUpperCase(),ts=new Date().toISOString().replace('T',' ').slice(0,19);
+ $('rl').innerHTML=`RECEIPT ${id}<br>${ts} UTC<br>${cur.side.toUpperCase()} · ${SPANS[span]} · ${M[cur.i][0]}<br>STAKE $${amt}.00 · cap left $${100-amt}.00<br>hash ${[...crypto.getRandomValues(new Uint8Array(8))].map(b=>b.toString(16).padStart(2,'0')).join('')}`;
+ $('buyView').style.display='none';$('rcpt').style.display='block';let t=300;clearInterval(lockT);
+ lockT=setInterval(()=>{t--;$('lock').textContent=Math.floor(t/60)+':'+String(t%60).padStart(2,'0');if(t<=0){clearInterval(lockT);$('lock').textContent='LOCKED 🔒'}},1000)}
+function closeBuy(){$('ov').classList.remove('on')}
+render();
+</script>
+</body>
+</html>
