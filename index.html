@@ -140,6 +140,19 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;colo
 .tl-g span{color:var(--yes);margin-left:8px}
 .tl-g:before{content:"";position:absolute;left:30px;top:0;bottom:0;width:2px;background:#2f2742}
 .tl-g:first-child:before{top:24px}
+.tri3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;max-width:720px}
+.tri3 button{position:relative;overflow:hidden;border:0;border-radius:12px;padding:12px 10px;cursor:pointer;text-align:left;font:700 13px Inter;color:var(--txt);background:#1b1628;box-shadow:inset 0 0 0 1px var(--line);transition:transform .15s}
+.tri3 button:hover{transform:translateY(-2px)}
+.tri3 span{display:block;position:relative;z-index:1}.tri3 b{display:block;position:relative;z-index:1;font:700 20px "JetBrains Mono";margin-top:4px}
+.tri3 i{position:absolute;left:0;bottom:0;height:3px}
+.tri3 .t0 b{color:var(--pink)}.tri3 .t0 i{background:var(--pink)}
+.tri3 .t1 b{color:var(--yes)}.tri3 .t1 i{background:var(--yes)}
+.tri3 .t2 b{color:var(--orange)}.tri3 .t2 i{background:var(--orange)}
+.tl.tri{grid-template-columns:minmax(0,1fr)}
+.tl.tri .mt{min-width:0}
+.tl.tri .vol{white-space:normal}
+.tag.tt0{background:rgba(255,45,149,.15);color:var(--pink)}.tag.tt1{background:rgba(34,227,154,.14);color:var(--yes)}.tag.tt2{background:rgba(255,138,61,.15);color:var(--orange)}
+.proof{font-size:12.5px;color:#bdf5dc;background:rgba(34,227,154,.06);border:1px solid rgba(34,227,154,.25);border-radius:14px;padding:12px 14px;margin-top:12px;line-height:1.6}
 .flash{animation:fl .9s}
 @keyframes fl{0%{background:rgba(255,210,63,.18)}100%{background:transparent}}
 
@@ -247,6 +260,9 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;colo
   .tl-g{padding:16px 14px 8px 48px}
   .tl .yn{min-width:0}
   .mt{font-size:15px}
+  .tri3{grid-template-columns:1fr}
+  .tri3 button{display:flex;justify-content:space-between;align-items:center;gap:10px}.tri3 b{margin:0;flex:none}
+  .tl{grid-template-columns:minmax(0,1fr)}
   .met{position:absolute;right:14px;top:16px;font-size:10px}
   .tl.done .mt{padding-right:40px}
   .panel{padding:16px}
@@ -311,6 +327,7 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;colo
   <p class="spanNote" id="spanNote"></p>
 
   <div class="table" id="table"></div>
+  <p class="proof mono" id="triProof"></p>
 
   <section class="stats" id="statsBot" style="grid-template-columns:repeat(4,1fr)">
     <div class="stat"><div class="k">1D pool</div><div class="v" id="p0">$0</div></div>
@@ -390,10 +407,10 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;colo
 <script>
 const LAUNCH=new Date('2026-11-19T00:00:00-05:00');
 const M=[
- {g:'PREREQUISITES',k:'0A',t:'PS5 → PC software exists',d:'AnyPS5 · KytyPS5 · PortPS5 run PS5 games natively on PC',done:1},
- {g:'PREREQUISITES',k:'0B',t:'REA: AI agents that reverse engineer anything',d:'Agents + Ghidra/IDA, byte-exact rebuilds proven',done:1},
- {g:'PREREQUISITES',k:'0C',t:'There is a real competition online',d:'Reddit, Digital Foundry and LTT are already calling the race',done:1},
- {g:'THE RACE',k:'0',t:'GTA VI is out: officially released, or leaked online',d:'The starting gun · Rockstar date: Nov 19, 2026'},
+ {g:'PREREQUISITES',k:'A',t:'PS5 → PC software exists',d:'AnyPS5 · KytyPS5 · PortPS5 run PS5 games natively on PC',done:1},
+ {g:'PREREQUISITES',k:'B',t:'REA: AI agents that reverse engineer anything',d:'Agents + Ghidra/IDA, byte-exact rebuilds proven',done:1},
+ {g:'PREREQUISITES',k:'C',t:'There is a real competition online',d:'Reddit, Digital Foundry and LTT are already calling the race',done:1},
+ {g:'THE RACE',k:'0',t:'GTA VI release: leaked, on time, or delayed?',d:'The starting gun · one three-way bet, shared by every time frame · Rockstar date: Nov 19, 2026',tri:['Leaked before Nov 19','Released on time','Delayed']},
  {g:'THE RACE',k:'1',t:'First Person To Port GTA VI To PC, And Successfully Play It',d:'Interactive gameplay running locally on a PC'},
  {g:'THE RACE',k:'2',t:'First Release That Others Can Run',d:'Independent testers reproduce it from published instructions'},
  {g:'THE RACE',k:'3',t:'Playing Online Works',d:'Players on separate machines in one synced world'},
@@ -409,7 +426,11 @@ const SPANS=['1D','1W','FN','1M'],DAYS=[1,7,14,30];
 // base yes-probabilities per span, per milestone (mock)
 // mock YES chance per span (1D,1W,FN,1M) for each milestone in M (prereqs ignored)
 const BASE=[[0,0,0,.97,.18,.04,.02,.01,.003,.02,.06,.09,.04],[0,0,0,.99,.41,.17,.07,.03,.008,.08,.22,.09,.04],[0,0,0,.99,.58,.33,.16,.07,.015,.17,.41,.09,.04],[0,0,0,.99,.71,.52,.29,.13,.03,.31,.63,.09,.04]];
-const pools=BASE.map((r,s)=>r.map((p,i)=>{if(M[i].done)return null;const t=(4000+Math.random()*9000)*(1+s*.6)*(1-i*.08);return{y:t*p+40,n:t*(1-p)+40}}));
+const TRI={o:[1900,21800,1300]}; // shared 3-way pool: leaked / on time / delayed
+const pools=BASE.map((r,s)=>r.map((p,i)=>{if(M[i].done)return null;if(M[i].tri)return TRI;const t=(4000+Math.random()*9000)*(1+s*.6)*(1-i*.08);return{o:[t*p+40,t*(1-p)+40]}}));
+const sum=a=>a.reduce((x,y)=>x+y,0);
+// parimutuel settlement for any number of outcomes: winners split the losing pools minus the house fee
+function settle(pool,win,fee){const T=sum(pool),W=pool[win],L=T-W;if(W===0)return{paid:0,house:0,refund:T};return{paid:W+(1-fee)*L,house:fee*L,refund:0}}
 let span=2,entries=0,FEE=.05;
 const TITLES=[['1 Day','T − 1D'],['1 Week','T − 7D'],['Fortnite','T − 14D'],['1 Month','T − 30D']];
 function spanDates(){const d=LAUNCH.getTime()+DAYS[span]*864e5;return [LAUNCH.getTime(),d,d+864e5]}
@@ -419,17 +440,20 @@ function clocks(){spanDates().forEach((t,i)=>{$('c'+i).textContent=left(t);$('c'
 setInterval(clocks,1000);
 const $=id=>document.getElementById(id);
 const fmt=v=>'$'+Math.round(v).toLocaleString();
-function prob(m){return m.y/(m.y+m.n)}
+function prob(m,k=0){return m.o[k]/sum(m.o)}
 function render(){
   const rows=[];let g='';
   M.forEach((m,i)=>{
     if(m.g!==g){g=m.g;rows.push(`<div class="tl-g">${g}${g==='PREREQUISITES'?' <span>all met ✓</span>':''}</div>`)}
     if(m.done){rows.push(`<div class="tl done"><div class="node">✓</div><div class="mt"><span class="k">${m.k}</span>${m.t}<small>${m.d}</small></div><div class="met">MET</div></div>`);return}
     const pl=pools[span][i],p=prob(pl);
+    if(m.tri){rows.push(`<div class="tl tri" id="r${i}"><div class="node"></div><div class="mt"><span class="k">${m.k}</span>${m.t}<small>${m.d}</small>
+      <div class="tri3">${m.tri.map((lab,k)=>{const q=prob(pl,k);return `<button class="t${k}" onclick="openBuy(${i},${k})"><span>${lab}</span><b>${Math.round(q*100)}¢</b><i style="width:${q*100}%"></i></button>`}).join('')}</div>
+      <div class="prob"><span class="vol">${fmt(sum(pl.o))} pool · winners split the losing pools, the house keeps 5%</span></div></div></div>`);return}
     rows.push(`<div class="tl" id="r${i}"><div class="node"></div>
     <div class="mt"><span class="k">${m.k}</span>${m.t}<small>${m.d}</small>
-      <div class="prob"><span class="p">${(p*100).toFixed(p<.1?1:0)}%</span><div class="bar"><i style="width:${p*100}%"></i></div><span class="vol">${fmt(pl.y+pl.n)} pool</span></div></div>
-    <div class="yn"><button class="y" onclick="openBuy(${i},'yes')">Yes<span class="sp">${SPANS[span]}</span><b>${Math.round(p*100)}¢</b></button><button class="n" onclick="openBuy(${i},'no')">No<span class="sp">${SPANS[span]}</span><b>${Math.round((1-p)*100)}¢</b></button></div></div>`)
+      <div class="prob"><span class="p">${(p*100).toFixed(p<.1?1:0)}%</span><div class="bar"><i style="width:${p*100}%"></i></div><span class="vol">${fmt(sum(pl.o))} pool</span></div></div>
+    <div class="yn"><button class="y" onclick="openBuy(${i},0)">Yes<span class="sp">${SPANS[span]}</span><b>${Math.round(p*100)}¢</b></button><button class="n" onclick="openBuy(${i},1)">No<span class="sp">${SPANS[span]}</span><b>${Math.round((1-p)*100)}¢</b></button></div></div>`)
   });
   $('table').innerHTML=rows.join('');
   const [,dl]=spanDates();
@@ -438,13 +462,13 @@ function render(){
   clocks();
   stats();
 }
-function tot(s){return pools[s].reduce((a,m)=>a+(m?m.y+m.n:0),0)}
+function tot(s){return pools[s].reduce((a,m,i)=>a+(m&&!(M[i].tri&&s)?sum(m.o):0),0)}
 function stats(){
   const all=[0,1,2,3].map(tot),T=all.reduce((a,b)=>a+b);
   $('sPool').textContent=fmt(T);$('navPool').textContent=fmt(T);
   $('sEnt').textContent=entries.toLocaleString();$('sAvg').textContent='$'+(T/entries).toFixed(2);
   all.forEach((v,i)=>$('p'+i).textContent=fmt(v));
-  let best=[0,0,0];pools.forEach((r,s)=>r.forEach((m,i)=>{if(m&&m.y+m.n>best[0])best=[m.y+m.n,s,i]}));
+  let best=[0,0,0];pools.forEach((r,s)=>r.forEach((m,i)=>{if(m&&!M[i].tri&&sum(m.o)>best[0])best=[sum(m.o),s,i]}));
   $('sHot').textContent=M[best[2]].t.split(',')[0];$('sHotD').textContent=SPANS[best[1]]+' · '+fmt(best[0]);
 }
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');span=+b.dataset.s;render()});
@@ -469,29 +493,33 @@ spark();
 const NAMES=['vicecity_vic','leonida_lu','ps5ripper','rustacean','ghidra_gal','jason_d','lucia.dev','kyty_fan','byte_bandit','modfather','rea_runner','hexhunter'];
 const COLORS=['#ff2d95','#ff8a3d','#ffd23f','#19e3c4','#3fb6ff','#b388ff'];
 function act(){
-  const s=Math.floor(Math.random()*4),idx=LIVE[Math.floor(Math.random()*LIVE.length)],yes=Math.random()<prob(pools[s][idx])+.15,amt=[1,2,5,5,10,10,20,25,50,100][Math.floor(Math.random()*10)];
-  pools[s][idx][yes?'y':'n']+=amt;entries+=Math.random()<.6?1:0;sp.push(sp[sp.length-1]+amt/8);sp.shift();spark();
+  const s=Math.floor(Math.random()*4),idx=LIVE[Math.floor(Math.random()*LIVE.length)],pk=M[idx].tri?[0,1,1,1,1,1,1,2][Math.floor(Math.random()*8)]:(Math.random()<prob(pools[s][idx])+.15?0:1),yes=pk===0,amt=[1,2,5,5,10,10,20,25,50,100][Math.floor(Math.random()*10)];
+  pools[s][idx].o[pk]+=amt;entries+=Math.random()<.6?1:0;sp.push(sp[sp.length-1]+amt/8);sp.shift();spark();
   const nm=NAMES[Math.floor(Math.random()*NAMES.length)],c=COLORS[Math.floor(Math.random()*COLORS.length)];
-  const li=document.createElement('li');li.innerHTML=`<div class="av" style="background:${c}">${nm[0].toUpperCase()}</div><div><b>${nm}</b> bought <span class="tag ${yes?'y':'n'}">${yes?'YES':'NO'}</span> ${SPANS[s]}<br><span style="color:var(--mut);font-size:12.5px">${M[idx].t}</span></div><div class="amt">$${amt}</div>`;
+  const li=document.createElement('li');li.innerHTML=`<div class="av" style="background:${c}">${nm[0].toUpperCase()}</div><div><b>${nm}</b> bought <span class="tag ${M[idx].tri?'tt'+pk:(yes?'y':'n')}">${M[idx].tri?M[idx].tri[pk].toUpperCase():(yes?'YES':'NO')}</span> ${SPANS[s]}<br><span style="color:var(--mut);font-size:12.5px">${M[idx].t}</span></div><div class="amt">$${amt}</div>`;
   const f=$('feed');f.prepend(li);while(f.children.length>7)f.lastChild.remove();
-  if(s===span){render();const r=$('r'+idx);r&&r.classList.add('flash')}else stats();
+  if(s===span||M[idx].tri){render();const r=$('r'+idx);r&&r.classList.add('flash')}else stats();
   setTimeout(act,900+Math.random()*2200)
 }
 entries=Math.round([0,1,2,3].map(tot).reduce((a,b)=>a+b)/38);for(let i=0;i<6;i++)act();
 
 // checkout
 let cur=null,amt=10,lockT=null;
-function openBuy(i,side){cur={i,side};$('buyView').style.display='block';$('rcpt').style.display='none';
- $('bTitle').innerHTML=`Buy <span style="color:${side==='yes'?'var(--yes)':'var(--no)'}">${side.toUpperCase()}</span> · ${TITLES[span][0]} (${TITLES[span][1]})`;$('bQ').textContent=M[i].t;est();$('ov').classList.add('on')}
-function est(){const pl=pools[span][cur.i],w=cur.side==='yes'?pl.y:pl.n,l=cur.side==='yes'?pl.n:pl.y;$('bRet').textContent='$'+(amt+amt/(w+amt)*(1-FEE)*l).toFixed(2)}
+const lab=(i,k)=>M[i].tri?M[i].tri[k]:(k?'No':'Yes');
+function openBuy(i,side){if(typeof side==='string')side=side==='yes'?0:1;cur={i,side};$('buyView').style.display='block';$('rcpt').style.display='none';
+ $('bTitle').innerHTML=`Buy <span style="color:${M[i].tri?'var(--sun)':side?'var(--no)':'var(--yes)'}">${lab(i,side).toUpperCase()}</span> · ${M[i].tri?'all time frames':TITLES[span][0]+' ('+TITLES[span][1]+')'}`;$('bQ').textContent=M[i].t;est();$('ov').classList.add('on')}
+function est(){const pl=pools[span][cur.i],w=pl.o[cur.side],l=sum(pl.o)-w;$('bRet').textContent='$'+(amt+amt/(w+amt)*(1-FEE)*l).toFixed(2)}
 document.querySelectorAll('#amts button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#amts button').forEach(x=>x.classList.remove('on'));b.classList.add('on');amt=+b.textContent.slice(1);est()});
-function pay(){pools[span][cur.i][cur.side==='yes'?'y':'n']+=amt;entries++;render();
+function pay(){pools[span][cur.i].o[cur.side]+=amt;entries++;render();
  const id='OG-'+Math.random().toString(36).slice(2,8).toUpperCase(),ts=new Date().toISOString().replace('T',' ').slice(0,19);
- $('rl').innerHTML=`RECEIPT ${id}<br>${ts} UTC<br>${cur.side.toUpperCase()} · ${SPANS[span]} · ${M[cur.i].t}<br>STAKE $${amt}.00 · cap left $${100-amt}.00<br>hash ${[...crypto.getRandomValues(new Uint8Array(8))].map(b=>b.toString(16).padStart(2,'0')).join('')}`;
+ $('rl').innerHTML=`RECEIPT ${id}<br>${ts} UTC<br>${lab(cur.i,cur.side).toUpperCase()} · ${M[cur.i].tri?'ALL':SPANS[span]} · ${M[cur.i].t}<br>STAKE $${amt}.00 · cap left $${100-amt}.00<br>hash ${[...crypto.getRandomValues(new Uint8Array(8))].map(b=>b.toString(16).padStart(2,'0')).join('')}`;
  $('buyView').style.display='none';$('rcpt').style.display='block';let t=300;clearInterval(lockT);
  lockT=setInterval(()=>{t--;$('lock').textContent=Math.floor(t/60)+':'+String(t%60).padStart(2,'0');if(t<=0){clearInterval(lockT);$('lock').textContent='LOCKED 🔒'}},1000)}
 function closeBuy(){$('ov').classList.remove('on')}
-render();
+// live solvency proof: 3-way market, random bettors, every outcome, fees 0-20%
+function proveTri(){let trials=0,worst=0,maxErr=0;for(let t=0;t<2000;t++){const pool=[0,0,0],n=5+Math.floor(Math.random()*300);for(let b=0;b<n;b++)pool[Math.floor(Math.random()*3)]+=1+Math.floor(Math.random()*100);const fee=Math.random()*.2;for(let w=0;w<3;w++){const r=settle(pool,w,fee),T=sum(pool);maxErr=Math.max(maxErr,Math.abs(r.paid+r.house+r.refund-T));worst=Math.max(worst,(r.paid+r.refund)/T);trials++}}
+ $('triProof').innerHTML=`✓ <b>${trials.toLocaleString()}</b> random 3-way settlements: payouts + house always equal what was collected (max error ${maxErr.toFixed(9)}). The worst case paid out ${(worst*100).toFixed(2)}% of the pool, and it can never go above 100%.`}
+render();proveTri();
 </script>
 </body>
 </html>
