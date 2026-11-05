@@ -160,6 +160,14 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;colo
 .cad span{flex:1;text-align:center;font:700 12px "JetBrains Mono";padding:9px 0;border-radius:10px;border:1px solid var(--line);color:var(--mut)}
 .cad span.on{background:var(--grad);color:#170a12;border-color:transparent}
 
+.trans{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px}
+.tlead{font-size:17px;line-height:1.55;color:#e4dbf4;max-width:860px}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.tc{background:#0f0d18;border:1px solid var(--line);border-radius:16px;padding:16px}
+.tc i{font-style:normal;font-size:22px}.tc b{display:block;margin:8px 0 4px;font-size:15px}.tc p{font-size:13px;color:var(--mut);line-height:1.5}
+.tlog{display:grid;gap:8px;font-size:12.5px;color:#cfc4e3}
+.tg{display:inline-block;min-width:84px;text-align:center;padding:2px 6px;border-radius:5px;font:800 10px Inter;letter-spacing:.1em;margin-right:8px}
+.tg.ok{background:rgba(34,227,154,.14);color:var(--yes)}.tg.dis{background:rgba(255,210,63,.14);color:var(--sun)}.tg.fx{background:rgba(255,77,109,.14);color:var(--no)}
 .posts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
 .post{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;text-decoration:none;transition:transform .2s,border-color .2s}
 .post:hover{transform:translateY(-4px);border-color:#4b3a6b}
@@ -203,7 +211,7 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;colo
 
 @media(max-width:980px){
   .stats{grid-template-columns:repeat(2,1fr)}
-  .two,.posts{grid-template-columns:1fr}
+  .two,.posts,.tgrid{grid-template-columns:1fr}
   nav ul{display:none}
   .palms{display:none}
   .sun{width:420px;height:420px;right:-160px}
@@ -255,7 +263,7 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;colo
 
 <nav><div class="wrap">
   <div class="logo">OpenGTA<small>SPEEDRUN MARKET</small></div>
-  <ul><li><a href="#markets">Markets</a></li><li><a href="#evidence">Evidence</a></li><li><a href="#agents">Agents</a></li><li><a href="#rules">Rules</a></li></ul>
+  <ul><li><a href="#markets">Markets</a></li><li><a href="#evidence">Evidence</a></li><li><a href="#agents">Agents</a></li><li><a href="#transparency">Transparency</a></li><li><a href="#rules">Rules</a></li></ul>
   <div class="navr"><span class="live"><i class="dot"></i>LIVE</span><span class="pill mono" id="navPool">$0</span><button class="btn" onclick="openBuy(4,'yes')">Place your bet</button></div>
 </div></nav>
 
@@ -320,6 +328,25 @@ h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;colo
       <div class="ag">🔬 <b>Verifier</b> cross-checks every claim<span class="t">ok · 1m ago</span></div>
       <div class="cad"><span>5h</span><span>2h</span><span>1h</span><span>30m</span></div>
       <p style="color:var(--mut);font-size:12.5px;margin-top:10px">Check-ins get more frequent as each deadline gets closer.</p>
+    </div>
+  </div>
+
+  <div class="mhead" id="transparency"><h2>Radical <em>transparency</em></h2><span style="color:var(--mut);font-size:14px">This is the internet. Some news will turn out false later.</span></div>
+  <div class="trans">
+    <div class="tlead">OpenGTA is open source, and the entire investigation process is public. Each finding is published as soon as it's verified, and every revision is kept so you can see what we believed, when, and why it changed.</div>
+    <div class="tgrid">
+      <div class="tc"><i>🧠</i><b>Every agent trace</b><p>Each search, read and reasoning step the research agents take is logged and published.</p></div>
+      <div class="tc"><i>🕰️</i><b>Revisions with saved history</b><p>Nothing is silently edited. Each change to a claim or resolution keeps its full version history.</p></div>
+      <div class="tc"><i>🔗</i><b>Sources, links and evidence</b><p>Every claim links to its original posts, commits, videos and archives.</p></div>
+      <div class="tc"><i>⚖️</i><b>Agreements and disagreements</b><p>All market opinions, for and against, are shown side by side with analysis.</p></div>
+      <div class="tc"><i>🔬</i><b>Full investigations</b><p>Deep dives on every milestone claim, made public once verified.</p></div>
+      <div class="tc"><i>↩️</i><b>Corrections, out loud</b><p>When a story turns out to be false, the correction is pinned and the timeline shows it.</p></div>
+    </div>
+    <div class="tlog mono">
+      <div><span class="tg ok">VERIFIED</span> 0A PS5 → PC software exists · 6 sources · rev 3</div>
+      <div><span class="tg ok">VERIFIED</span> 0B REA works on real binaries · 4 sources · rev 2</div>
+      <div><span class="tg dis">DISPUTED</span> REA star count: 431.5k vs 18k · both sources shown</div>
+      <div><span class="tg fx">CORRECTED</span> "GTA VI already cracked" video, AI-generated · retracted</div>
     </div>
   </div>
 
